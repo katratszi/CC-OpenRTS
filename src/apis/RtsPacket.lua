@@ -181,6 +181,7 @@ end
 function RtsSuccessPacket()
 	local self = RtsPacket().HeaderType(RtsPacketTypes.Success)
 
+	-- wrap generic message in to Data property:
 	function self.Message(oMessage)
 		if (oMessage == nil) then
 			return self.Data()
@@ -258,6 +259,27 @@ function RtsJobCompletedPacket()
 
 	-- Flag Type Packet, remove Data property:
 	self.Data = nil
+
+	return self
+end
+
+function RtsFileRequestPacket()
+	local self = RtsPacket().HeaderType(RtsPacketTypes.FileRequest)
+
+	-- wrap generic message in to Data property:
+	function self.File(sPath)
+		if (sPath == nil) then
+			return self.Data()
+		end
+
+		return self.Data(sPath)
+	end
+	
+	return self
+end
+
+function RtsFileRequestPacket()
+	local self = RtsPacket().HeaderType(RtsPacketTypes.FileData)
 
 	return self
 end
