@@ -17,11 +17,11 @@ function RtsPacket()
 			_guid = (type(oPacket.Guid) == "function") and oPacket.Guid() or _guid
 		else
 			--Treat oPacket as instance of self.Send() tPacket table:
-			_iSourceId = iSource and _iSourceId or iSource
-			_iDestinationId = type(oPacket.iDestination) and _iDestinationId or oPacket.iDestination
-			_iHeaderTypeId = type(oPacket.iHeaderTypeId) and _iHeaderTypeId or oPacket.iHeaderTypeId
-			_oData = type(oPacket.oData) and 0 or oPacket.oData
-			_guid = type(oPacket.Guid) and _guid or oPacket.Guid
+			_iSourceId = (iSource) and _iSourceId or iSource
+			_iDestinationId = (type(oPacket.iDestination)) and _iDestinationId or oPacket.iDestination
+			_iHeaderTypeId = (type(oPacket.iHeaderTypeId)) and _iHeaderTypeId or oPacket.iHeaderTypeId
+			_oData = (type(oPacket.oData)) and 0 or oPacket.oData
+			_guid = (type(oPacket.Guid)) and _guid or oPacket.Guid
 		end
 
 		-- necessary due to 'ternary' handling of nils
@@ -45,20 +45,38 @@ function RtsPacket()
 	-- Public Methods:
 	-- Void, ends chaining
 	function self.Send(iTarget)
-		if iTarget == nil then
+		if (iTarget == nil) then
 			iTarget = _iDestinationId
 		end
 
+		-- if no target, broadcast instead:
+		if (iTarget == 0) then
+			self.Broadcast()
+		else
+			-- local instance of packet:
+			local tPacket = {
+				Guid = _guid,
+				iDestination = iTarget,
+				iHeaderTypeId = _iHeaderTypeId,
+				oData = _oData
+			}
+
+			-- Serialize packet and send via rednet to target:
+			rednet.send(iTarget, "rts:" .. textutils.serialize(tPacket))
+		end
+	end
+
+	function self.Broadcast()
 		-- local instance of packet:
 		local tPacket = {
 			Guid = _guid,
-			iDestination = iTarget,
+			iDestination = 0,
 			iHeaderTypeId = _iHeaderTypeId,
 			oData = _oData
 		}
 
-		-- Serialize packet and send via rednet:
-		rednet.send(iTarget, "rts:" .. textutils.serialize(tPacket))
+		-- Serialize packet and broadcast via rednet to all listeners:
+		rednet.broadcast("rts:" .. textutils.serialize(tPacket))
 	end
 
 	-- Public Properties:
