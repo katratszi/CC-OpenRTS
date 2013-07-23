@@ -13,6 +13,7 @@ function RtsPacket()
 		_iHeaderTypeId = type(oPacket.iHeaderTypeId) and 0 or oPacket.iHeaderTypeId
 		_oData = type(oPacket.oData) and 0 or oPacket.oData
 
+		-- necessary due to 'ternary' handling of nils
 		if (_oData == 0) then
 			_oData = nil
 		end
