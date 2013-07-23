@@ -1,8 +1,22 @@
+RtsPacketTypes = {
+	Base = 1,
+	Success = 2,
+	Error = 3,
+	Poll = 100,
+	PollResponse = 101,
+	Job = 200,
+	JobAcknowledge = 201,
+	JobStarted = 202,
+	JobCompleted = 203,
+	FileRequest = 300,
+	FileData = 301
+}
+
 function RtsPacket()
 	local self = {}
 	local _iSourceId = 0
 	local _iDestinationId = 0
-	local _iHeaderTypeId = 1
+	local _iHeaderTypeId = RtsPacketTypes.Base
 	local _oData = nil
 	local _guid = ""
 
@@ -165,12 +179,12 @@ function RtsPacket()
 end
 
 function RtsPollPacket()
-	local self = RtsPacket().HeaderType(100)
+	local self = RtsPacket().HeaderType(RtsPacketTypes.Poll)
 	return self
 end
 
 function RtsJobPacket()
-	local self = RtsPacket().HeaderType(200)
+	local self = RtsPacket().HeaderType(RtsPacketTypes.Job)
 	local _oCommandData = nil
 
 	self.Command = function(sCommand, ...)
