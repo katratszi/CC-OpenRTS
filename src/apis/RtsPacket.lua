@@ -278,7 +278,7 @@ function RtsFileRequestPacket()
 	return self
 end
 
-function RtsFileRequestPacket()
+function RtsFileDataPacket()
 	local self = RtsPacket().HeaderType(RtsPacketTypes.FileData)
 
 	return self
