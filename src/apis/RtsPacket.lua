@@ -180,6 +180,10 @@ end
 
 function RtsPollPacket()
 	local self = RtsPacket().HeaderType(RtsPacketTypes.Poll)
+
+	-- Remove data property:
+	self.Data = nil
+
 	return self
 end
 
@@ -187,6 +191,7 @@ function RtsJobPacket()
 	local self = RtsPacket().HeaderType(RtsPacketTypes.Job)
 	local _oCommandData = nil
 
+	-- Wrap command and arguments in to the Data property:
 	self.Command = function(sCommand, ...)
 		if (sCommand == nil) then
 			return self.Data()
