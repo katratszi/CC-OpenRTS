@@ -1,5 +1,5 @@
 function RtsPacket()
-  local _iSourceId = 0
+	local _iSourceId = 0
 	local _iDestinationId = 0
 	local _iHeaderTypeId = 1
 	local _oData = nil
@@ -8,10 +8,21 @@ function RtsPacket()
 	-- Initializers:
 	-- memberwise copy / copy constructor:
 	function self.Copy(oPacket, iSource)
-		_iSourceId = iSource and 0 or iSource
-		_iDestinationId = type(oPacket.iDestination) and 0 or oPacket.iDestination
-		_iHeaderTypeId = type(oPacket.iHeaderTypeId) and 0 or oPacket.iHeaderTypeId
-		_oData = type(oPacket.oData) and 0 or oPacket.oData
+		if (type(oPacket.Guid) == "function") then
+			--oPacket contains the Guid() property, treat as instance of RtsPacket
+			_iSourceId = (type(oPacket.Source) == "function") and oPacket.Source() or _iSourceId
+			_iDestinationId = (type(oPacket.Destination) == "function") and oPacket.Destination() or _iDestinationId
+			_iHeaderTypeId = (type(oPacket.HeaderType) == "function") and oPacket.HeaderType() or _iHeaderTypeId
+			_oData = (type(oPacket.Data) == "function") and oPacket.Data() or 0
+			_guid = (type(oPacket.Guid) == "function") and oPacket.Guid() or _guid
+		else
+			--Treat oPacket as instance of self.Send() tPacket table:
+			_iSourceId = iSource and _iSourceId or iSource
+			_iDestinationId = type(oPacket.iDestination) and _iDestinationId or oPacket.iDestination
+			_iHeaderTypeId = type(oPacket.iHeaderTypeId) and _iHeaderTypeId or oPacket.iHeaderTypeId
+			_oData = type(oPacket.oData) and 0 or oPacket.oData
+			_guid = type(oPacket.Guid) and _guid or oPacket.Guid
+		end
 
 		-- necessary due to 'ternary' handling of nils
 		if (_oData == 0) then
@@ -23,10 +34,10 @@ function RtsPacket()
 
 	-- standard constructor, supports chaining
 	function self.Construct(iSourceId, iDestiantionId, iHeaderTypeId, oData)
-		_iSourceId = iSourceId and 0 or iSourceId
-		_iDestinationId = iDestiantionId and 0 or iDestiantionId
-		_iHeaderTypeId = iHeaderTypeId and 0 or iHeaderTypeId
-		_oData = oData and 0 or oData
+		_iSourceId = iSourceId and _iSourceId or iSourceId
+		_iDestinationId = iDestiantionId and _iDestinationId or iDestiantionId
+		_iHeaderTypeId = iHeaderTypeId and _iHeaderTypeId or iHeaderTypeId
+		_oData = oData and _oData or oData
 
 		return self
 	end
