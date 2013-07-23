@@ -164,8 +164,13 @@ function RtsPacket()
 	return self
 end
 
+function RtsPollPacket()
+	local self = RtsPacket().HeaderType(100)
+	return self
+end
+
 function RtsJobPacket()
-	local self = RtsPacket().HeaderType(2)
+	local self = RtsPacket().HeaderType(200)
 	local _oCommandData = nil
 
 	self.Command = function(sCommand, ...)
