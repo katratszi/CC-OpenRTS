@@ -181,7 +181,7 @@ end
 function RtsPollPacket()
 	local self = RtsPacket().HeaderType(RtsPacketTypes.Poll)
 
-	-- Remove data property:
+	-- Flag Type Packet, remove Data property:
 	self.Data = nil
 
 	return self
@@ -200,6 +200,36 @@ function RtsJobPacket()
 		_oCommandData = { Command = sCommand, Arguments = arg}
 		return self.Data(_oCommandData)
 	end
+
+	return self
+end
+
+function RtsJobAcknowledgePacket()
+	local self = RtsPacket().HeaderType(RtsPacketTypes.JobAcknowledge)
+	local _oCommandData = nil
+
+	-- Flag Type Packet, remove Data property:
+	self.Data = nil
+
+	return self
+end
+
+function RtsJobStartedPacket()
+	local self = RtsPacket().HeaderType(RtsPacketTypes.JobStarted)
+	local _oCommandData = nil
+
+	-- Flag Type Packet, remove Data property:
+	self.Data = nil
+
+	return self
+end
+
+function RtsJobCompletedPacket()
+	local self = RtsPacket().HeaderType(RtsPacketTypes.JobCompleted)
+	local _oCommandData = nil
+
+	-- Flag Type Packet, remove Data property:
+	self.Data = nil
 
 	return self
 end
