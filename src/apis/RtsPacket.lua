@@ -1,4 +1,5 @@
 function RtsPacket()
+	local self = {}
 	local _iSourceId = 0
 	local _iDestinationId = 0
 	local _iHeaderTypeId = 1
@@ -160,5 +161,21 @@ function RtsPacket()
 	_guid = self.createGuid()
 
 	-- return instance:
+	return self
+end
+
+function RtsJobPacket()
+	local self = RtsPacket().HeaderType(2)
+	local _oCommandData = nil
+
+	self.Command = function(sCommand, ...)
+		if (sCommand == nil) then
+			return self.Data()
+		end
+
+		_oCommandData = { Command = sCommand, Arguments = arg}
+		return self.Data(_oCommandData)
+	end
+
 	return self
 end
