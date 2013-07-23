@@ -178,8 +178,36 @@ function RtsPacket()
 	return self
 end
 
+function RtsSuccessPacket()
+	local self = RtsPacket().HeaderType(RtsPacketTypes.Success)
+
+	function self.Message(oMessage)
+		if (oMessage == nil) then
+			return self.Data()
+		end
+
+		return self.Data(oMessage)
+	end
+
+	return self
+end
+
+function RtsErrorPacket()
+	local self = RtsSuccessPacket().HeaderType(RtsPacketTypes.Error)
+	return self
+end
+
 function RtsPollPacket()
 	local self = RtsPacket().HeaderType(RtsPacketTypes.Poll)
+
+	-- Flag Type Packet, remove Data property:
+	self.Data = nil
+
+	return self
+end
+
+function RtsPollResponsePacket()
+	local self = RtsPacket().HeaderType(RtsPacketTypes.PollResponse)
 
 	-- Flag Type Packet, remove Data property:
 	self.Data = nil
@@ -192,7 +220,7 @@ function RtsJobPacket()
 	local _oCommandData = nil
 
 	-- Wrap command and arguments in to the Data property:
-	self.Command = function(sCommand, ...)
+	function self.Command(sCommand, ...)
 		if (sCommand == nil) then
 			return self.Data()
 		end
